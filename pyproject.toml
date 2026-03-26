@@ -1,0 +1,13 @@
+[project]
+name = "reverse-engine"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "demucs>=4.0.1",
+    "opentimelineio>=0.18.1",
+    "otio-fcp-adapter>=1.0.0",
+    "scenedetect[opencv]>=0.6.7.1",
+    "yt-dlp>=2026.3.17",
+]
