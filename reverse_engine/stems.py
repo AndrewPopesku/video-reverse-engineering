@@ -1,4 +1,5 @@
 import subprocess
+import sys
 from pathlib import Path
 
 
@@ -32,7 +33,7 @@ def separate_stems(audio_path: Path, output_dir: Path) -> dict[str, Path]:
 
     subprocess.run(
         [
-            "python3", "-m", "demucs",
+            sys.executable, "-m", "demucs",
             "--two-stems=vocals",
             "-o", str(output_dir),
             str(audio_path),
