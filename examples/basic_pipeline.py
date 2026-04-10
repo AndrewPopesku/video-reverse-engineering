@@ -1,8 +1,19 @@
+"""Basic pipeline example: extract insights from a video file.
+
+Usage:
+    python examples/basic_pipeline.py <path-to-video>
+"""
+
+import sys
+
+from reverse_engine import reverse_engineer
+
+
 def main():
-    from reverse_engine import reverse_engineer
+    video_path = sys.argv[1] if len(sys.argv) > 1 else "./video.mp4"
 
     result = reverse_engineer(
-        "./Challenging Car Restorations Car SOS.mp4",
+        video_path,
         output_dir="./output",
         insights={"transcript", "visual", "text", "audio"},
         whisper_model="small",

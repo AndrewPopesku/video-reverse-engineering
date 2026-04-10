@@ -1,7 +1,7 @@
 [project]
 name = "reverse-engine"
 version = "0.1.0"
-description = "Add your description here"
+description = "Reverse-engineer any video into structured insights: scenes, transcript, visual labels, embeddings, and semantic search."
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [

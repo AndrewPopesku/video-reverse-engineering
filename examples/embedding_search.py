@@ -1,29 +1,34 @@
-"""Embedding pipeline: runs the existing reverse-engine pipeline, then adds
-Gemini Embedding 2 multimodal embeddings for semantic scene search."""
+"""Embedding pipeline: index video scenes with Gemini Embedding 2 for
+semantic search, duplicate detection, and clustering.
 
+Usage:
+    python examples/embedding_search.py <path-to-video>
+"""
+
+import os
+import sys
 from pathlib import Path
+
+from dotenv import load_dotenv
+from google import genai
+
+from reverse_engine import reverse_engineer
+from reverse_engine.clips import extract_scene_clips
+from reverse_engine.embeddings_store import EmbeddingStore
+from reverse_engine.gemini.embeddings import embed_query, embed_scenes
+
+load_dotenv()
 
 
 def main():
-    from reverse_engine import reverse_engineer
-    from reverse_engine.clips import extract_scene_clips
-    from reverse_engine.embeddings_store import EmbeddingStore
-    from reverse_engine.gemini.embeddings import embed_query, embed_scenes
-
-    from dotenv import load_dotenv
-    from google import genai
-    import os
-
-    load_dotenv()
-
-    source = "./Challenging Car Restorations Car SOS.mp4"
+    source = sys.argv[1] if len(sys.argv) > 1 else "./video.mp4"
     output_dir = "./output"
     out = Path(output_dir)
     embeddings_path = out / "embeddings.npz"
 
     # ── Step 1: Run existing pipeline ────────────────────────────
     print("=" * 60)
-    print("PHASE 1: Running existing video indexing pipeline")
+    print("PHASE 1: Running video indexing pipeline")
     print("=" * 60)
 
     result = reverse_engineer(
@@ -39,7 +44,7 @@ def main():
     # ── Step 2: Extract per-scene clips ──────────────────────────
     print()
     print("=" * 60)
-    print("PHASE 2: Extracting per-scene video clips and audio segments")
+    print("PHASE 2: Extracting per-scene video clips and audio")
     print("=" * 60)
 
     clips_dir = out / "clips"
@@ -65,7 +70,7 @@ def main():
     client = genai.Client(api_key=api_key)
     dimensions = 768
 
-    print(f"[2] Embedding {len(result.scenes)} scenes ({dimensions}d, model: gemini-embedding-2-preview)...")
+    print(f"[2] Embedding {len(result.scenes)} scenes ({dimensions}d)...")
     embeddings = embed_scenes(
         client,
         result.scenes,
@@ -83,7 +88,7 @@ def main():
     # ── Step 5: Demo search ──────────────────────────────────────
     print()
     print("=" * 60)
-    print("PHASE 4: Demo — semantic scene search")
+    print("PHASE 4: Semantic scene search")
     print("=" * 60)
 
     queries = [
